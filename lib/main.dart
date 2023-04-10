@@ -1,4 +1,5 @@
 import 'package:clean_air_and_weather/SplashScreen.dart';
+import 'package:clean_air_and_weather/WeatherScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:clean_air_and_weather/MyHomePage.dart';
 
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      //home:  WeatherScreen(title: Strings.titleapp),
       home:  SplashScreen(title: Strings.titleapp),
     );
   }

@@ -69,7 +69,7 @@ class PermissionScreen extends StatefulWidget {
     ),
     onPressed: () {
       //todo set permissions
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>MyHomePage()));
+    //  Navigator.push(context, MaterialPageRoute(builder: (context)=>MyHomePage(weather: null,)));
     },
     child: Text('Zgoda na lokalizację'),
 

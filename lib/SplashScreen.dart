@@ -1,6 +1,13 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:clean_air_and_weather/MyHomePage.dart';
 import 'package:clean_air_and_weather/PermissionScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'main.dart';
+import 'package:weather/weather.dart';
+import 'dart:developer';
 
 
 class SplashScreen extends StatefulWidget {
@@ -23,13 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
 
+
+
     new Future.delayed(const Duration(seconds: 5),
         ()=>{
       if(havePermission()){
-        Navigator.push(
-        context, MaterialPageRoute(
-            builder: (context)=>PermissionScreen(title: Strings.titleapp))
-    ),
+        executeOnceAfterBuild(),
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Permissions granted')))
       }else{
         // todo prefatching
@@ -89,7 +95,25 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  bool havePermission() {
-    return true;
+  @override
+  void initState() {
+    super.initState();
+    executeOnceAfterBuild();
+  }
+   bool havePermission() {    return true; }
+
+
+
+  Future<void> executeOnceAfterBuild() async {
+    WeatherFactory weatherFactory = new WeatherFactory('cde0b2884233a7911305176cf7f7843d', language: Language.POLISH);
+    Weather weather = await weatherFactory.currentWeatherByCityName('Kielce');
+    // 255bd651d082759d6d7295555795ed63193803a2 token czystosci powietrza
+    //50°52'10.1"N 20°36'10.3"E    50.869459, 20.602851
+    var _endpoint = 'https://';
+    var logger = Logger();
+    logger.e('to json z api');
+    logger.d(weather.toJson().toString());
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> MyHomePage( weather: weather)));
+
   }
 }
