@@ -1,5 +1,5 @@
-import 'dart:io';
-import 'dart:math';
+
+import 'dart:convert';
 
 import 'package:clean_air_and_weather/MyHomePage.dart';
 import 'package:clean_air_and_weather/PermissionScreen.dart';
@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'main.dart';
 import 'package:weather/weather.dart';
 import 'dart:developer';
+import 'package:http/http.dart' as http;
 
 
 class SplashScreen extends StatefulWidget {
@@ -109,11 +110,32 @@ class _SplashScreenState extends State<SplashScreen> {
     Weather weather = await weatherFactory.currentWeatherByCityName('Kielce');
     // 255bd651d082759d6d7295555795ed63193803a2 token czystosci powietrza
     //50°52'10.1"N 20°36'10.3"E    50.869459, 20.602851
-    var _endpoint = 'https://';
+    var _endpoint = 'https://api.waqi.info/feed/';
+    var lat = 50.869459;
+    var lon = 20.602851;
+    var keyword = 'geo:$lat;$lon';
+    var key = '255bd651d082759d6d7295555795ed63193803a2';
+    String url = '$_endpoint/$keyword/?token=$key';
+    http.Response response = await http.get(Uri.parse(url));
+    Map <String, dynamic> jsonbody = json.decode(response.body);
+    AirQuality sq = new AirQuality(jsonbody);
+
     var logger = Logger();
-    logger.e('to json z api');
+    logger.e(response.body.toString());
     logger.d(weather.toJson().toString());
     Navigator.push(context, MaterialPageRoute(builder: (context)=> MyHomePage( weather: weather)));
 
   }
+}
+class AirQuality{
+  bool isGood = false;
+  bool isBad = false;
+  String quality = "";
+  String advice = "";
+  int aqi = 0;
+  int mp25 = 0;
+  int pm10 = 0;
+  String station = "";
+
+  AirQuality(Map<String, dynamic> jsonbody);
 }
